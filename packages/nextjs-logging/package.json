@@ -1,6 +1,14 @@
 {
   "name": "@core-mfg/nextjs-logging",
   "version": "0.0.1",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/core-mfg/nextjs-packages.git",
+    "directory": "packages/nextjs-logging"
+  },
   "main": "dist/index.js",
   "type": "module",
   "types": "dist/index.d.ts",
@@ -30,11 +38,6 @@
   "author": "alex@coremfg.io",
   "license": "MIT",
   "description": "",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/core-mfg/nextjs-packages.git",
-    "directory": "packages/nextjs-logging"
-  },
   "bugs": {
     "url": "https://github.com/core-mfg/nextjs-packages/issues"
   },

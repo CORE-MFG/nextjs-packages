@@ -1,6 +1,14 @@
 {
   "name": "@core-mfg/nextjs-settings",
   "version": "0.0.1",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/core-mfg/nextjs-packages.git",
+    "directory": "packages/nextjs-settings"
+  },
   "main": "dist/index.js",
   "type": "module",
   "types": "dist/index.d.ts",
@@ -44,6 +52,6 @@
   "dependencies": {
     "ioredis": "^5.7.0",
     "zustand": "5.0.5",
-    "@core-mfg/nextjs-logging": "workspace:*"
+    "@core-mfg/nextjs-logging": "^0.0.1"
   }
 }

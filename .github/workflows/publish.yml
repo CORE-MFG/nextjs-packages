@@ -20,8 +20,7 @@ jobs:
 
       # 3. Authenticate with GitHub Packages
       - run: |
-          echo "@core-mfg:registry=https://npm.pkg.github.com/" > ~/.npmrc
-          echo "//npm.pkg.github.com/:_authToken=${{ secrets.PACKAGE_MGR_TOKEN }}" >> ~/.npmrc
+          export PACKAGE_MGR_TOKEN=${{ secrets.PACKAGE_MGR_TOKEN }}
 
       # 4. Extract package name from tag
       - name: Extract package name

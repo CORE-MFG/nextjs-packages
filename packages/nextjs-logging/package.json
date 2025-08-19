@@ -1,5 +1,5 @@
 {
-  "name": "nextjs-logging",
+  "name": "@core-mfg/nextjs-logging",
   "version": "0.0.1",
   "main": "dist/index.js",
   "type": "module",
@@ -18,6 +18,7 @@
       "types": "./dist/server.d.ts"
     }
   },
+  "browser": "./dist/index.js",
   "scripts": {
     "test": "vitest -c vitest.config.ts",
     "test:tsc": "tsc -p tsconfig.test.json --noEmit",
@@ -26,8 +27,8 @@
     "prepare": "npm run build"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "alex@coremfg.io",
+  "license": "MIT",
   "description": "",
   "peerDependencies": {
     "react": ">=18.2.0",
@@ -41,5 +42,14 @@
     "@types/react-dom": "^18.2.7",
     "dotenv": "^17.2.1",    
     "vitest": "^3.2.4"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/core-mfg/nextjs-packages.git",
+    "directory": "packages/nextjs-logging"
+  },
+  "bugs": {
+    "url": "https://github.com/core-mfg/nextjs-packages/issues"
+  },
+  "homepage": "https://github.com/core-mfg/nextjs-packages#readme"
 }

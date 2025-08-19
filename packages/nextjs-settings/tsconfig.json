@@ -1,47 +1,63 @@
 {
-  // Visit https://aka.ms/tsconfig to read more about this file
   "compilerOptions": {
-    // File Layout
-    "rootDir": "./src",                         // Root folder for TypeScript source files
-    "outDir": "./dist",                         // Output folder for compiled JS
+    // Directory containing source TypeScript files
+    "rootDir": "./src",            
 
-    // Environment Settings
-    "target": "ES2022",                          // JavaScript version output
-    "module": "ESNEXT",                          // Module system to output, safe for Node + Next.js
-    
-    "moduleResolution": "node",
-    "types": ["node", "react", "react-dom"],     // Include Node type definitions for globals like 'require'
-    // "lib": ["esnext"],                        // Not needed; target ES2022 is sufficient
+    // Directory where compiled JavaScript and declaration files are output
+    "outDir": "./dist",            
 
-    // Other Outputs
-    "sourceMap": true,                           // Generate source maps for debugging
-    "declaration": true,                         // Generate TypeScript declaration files (.d.ts)
-    "declarationMap": true,                      // Generate maps for declaration files
+    // JS language target version. ES2022 is safe for modern Node.js and Next.js consumers
+    "target": "ES2022",            
 
-    // Stricter Typechecking Options
-    "noUncheckedIndexedAccess": true,            // Forces undefined checks when accessing object keys
-    "exactOptionalPropertyTypes": true,          // Makes optional properties behave strictly
-    "esModuleInterop": true,                      // Allows default imports from CommonJS modules like `ioredis`
+    // Module system for output. ESNEXT ensures compatibility with modern bundlers and ESM imports
+    "module": "ESNEXT",            
 
-    // Style Options
-    // "noImplicitReturns": true,                // Optional: ensures all code paths return a value
-    // "noImplicitOverride": true,               // Optional: TypeScript 4.3+ override checking
-    // "noUnusedLocals": true,                   // Optional: warns about unused local variables
-    // "noUnusedParameters": true,               // Optional: warns about unused function parameters
-    // "noFallthroughCasesInSwitch": true,       // Optional: prevents fallthrough in switch statements
-    // "noPropertyAccessFromIndexSignature": true, // Optional: stricter property access for index signatures
+    // Provide typings for ES2022 built-ins like `Array.prototype.at`
+    "lib": ["ES2022", "DOM"],             
 
-    // Recommended Options
-    "strict": true,                              // Enables all strict type checking options
-    "jsx": "react-jsx",                          // Only needed if the package contains JSX; otherwise can be removed
-    "forceConsistentCasingInFileNames": true,
-    // "verbatimModuleSyntax": true,             // Not recommended for CommonJS; causes ESM import errors
-    "isolatedModules": true,                     // Ensures each file can be transpiled independently
-    "noUncheckedSideEffectImports": true,       // Warns about imports that may have side effects
-    "moduleDetection": "force",                  // Helps TS detect module boundaries; generally safe
-    "skipLibCheck": true,                        // Skips type checks for node_modules, speeds up compilation
-    "allowSyntheticDefaultImports": true         // Allows default imports from CommonJS modules
+    // Resolves modules like Node.js (checks node_modules, file extensions)
+    "moduleResolution": "node",    
+
+    // Include Node.js types for globals like `process` and `Buffer`
+    "types": ["node"],             
+
+    // Generate source maps for easier debugging in consuming apps
+    "sourceMap": true,             
+
+    // Generate TypeScript declaration files (.d.ts) for consumers
+    "declaration": true,           
+
+    // Generate maps for declaration files to help debugging TS in consumers
+    "declarationMap": true,        
+
+    // Enable all strict type-checking options
+    "strict": true,                
+
+    // Forces TypeScript to check for `undefined` when accessing object keys by index
+    "noUncheckedIndexedAccess": true, 
+
+    // Makes optional properties behave strictly, preventing accidental undefined usage
+    "exactOptionalPropertyTypes": true, 
+
+    // Allows default imports from CommonJS modules (like `import fs from 'fs'`)
+    "esModuleInterop": true,       
+
+    // Another layer of support for default imports from non-ESM modules
+    "allowSyntheticDefaultImports": true, 
+
+    // Ensures each file can be transpiled independently (required for libraries used in bundlers)
+    "isolatedModules": true,       
+
+    // Enforces consistent casing for file names to avoid cross-platform issues
+    "forceConsistentCasingInFileNames": true, 
+
+    // Skip type-checking of external modules to speed up compilation
+    "skipLibCheck": true           
   },
-  "include": ["src" ],
-  "exclude": ["**/examples"]
+
+  // Include all TS files under src
+  "include": ["src"],
+
+  // Exclude example code or test files from compilation
+  "exclude": ["**/examples", "**/__tests__"]
 }

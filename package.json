@@ -10,14 +10,16 @@
       "dev": "pnpm --parallel --filter './apps/*' dev",
       "build": "pnpm --filter ./packages/* build",
       "lint": "pnpm --recursive lint",
-      "test": "pnpm --recursive test",
+      "test": "vitest",
+      "test:watch": "vitest --watch",
       "clean": "pnpm --recursive exec rm -rf dist node_modules"
     },
   
     "devDependencies": {
       "typescript": "^5.4.0",
       "ts-node": "^10.9.2",
-      "@types/node": "^20.11.30"
+      "@types/node": "^20.11.30",
+      "vitest": "^3.2.4"
     }
   }
   

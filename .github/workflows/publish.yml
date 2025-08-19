@@ -18,11 +18,7 @@ jobs:
           node-version: 20
           registry-url: https://npm.pkg.github.com
 
-      # 3. Authenticate with GitHub Packages
-      - run: |
-          export PACKAGE_MGR_TOKEN=${{ secrets.PACKAGE_MGR_TOKEN }}
-
-      # 4. Extract package name from tag
+      # 3. Extract package name from tag
       - name: Extract package name
         id: extract-package
         run: |
@@ -32,14 +28,16 @@ jobs:
           echo "package_name=$PACKAGE_NAME" >> $GITHUB_OUTPUT
           echo "Building and publishing package: $PACKAGE_NAME"
 
-      # 5. Install dependencies using pnpm
+      # 4. Install dependencies using pnpm
       - run: npm install -g pnpm
       - run: pnpm install --frozen-lockfile
 
-      # 6. Build specific package only
+      # 5. Build specific package only
       - name: Build package
         run: pnpm --filter ./packages/${{ steps.extract-package.outputs.package_name }} build
 
-      # 7. Publish specific package only
+      # 6. Publish specific package only
       - name: Publish package
+        env:
+          PACKAGE_MGR_TOKEN: ${{ secrets.PACKAGE_MGR_TOKEN }}
         run: pnpm --filter ./packages/${{ steps.extract-package.outputs.package_name }} publish --access public --no-git-checks

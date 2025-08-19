@@ -1,17 +1,11 @@
 // packages/nextjs-settings/vitest.config.ts
 import { defineConfig } from "vitest/config";
 import rootConfig from "../../vitest.config";
-import path from "path";
 
 export default defineConfig({
   ...rootConfig,
   test: {
     ...rootConfig.test,
     include: ["test/**/*.test.ts"], // package-local tests only
-  },
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, 'src'), // <- map @ to ./src
-    },
   },
 });

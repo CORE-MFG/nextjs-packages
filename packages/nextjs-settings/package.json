@@ -22,7 +22,7 @@
     }
   },
   "scripts": {
-    "test": "vitest -c vitest.config.ts",  
+    "test": "vitest",  
     "test:tsc": "tsc -p tsconfig.test.json --noEmit",
     "test:watch": "vitest --watch",
     "build": "tsc",
@@ -33,16 +33,13 @@
   "license": "ISC",
   "description": "",
   "peerDependencies": {
-    "react": ">=18.2.0",
-    "react-dom": ">=18.2.0"
+    "react": ">=18.2.0 <20",
+    "react-dom": ">=18.2.0 <20"
   },
   "devDependencies": {
-    "typescript": "^5.9.2",
-    "@types/node": "^24.3.0",
     "dotenv": "^17.2.1",
     "@types/react": "^18.2.14",
-    "@types/react-dom": "^18.2.7",
-    "vitest": "^3.2.4"
+    "@types/react-dom": "^18.2.7"
   },
   "dependencies": {
     "ioredis": "^5.7.0",

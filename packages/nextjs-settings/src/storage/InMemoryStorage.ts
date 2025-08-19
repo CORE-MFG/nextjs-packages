@@ -1,7 +1,5 @@
-import { ISettingsStorage } from "./ISettingsStorage";
-import { Settings } from "../settings";
-import fs from "fs/promises";
-import path from "path";
+import { Settings } from "@/settings";
+import { ISettingsStorage } from "@/storage/ISettingsStorage";
 
 export interface InMemoryStorageOptions {
   defaults?: Settings;

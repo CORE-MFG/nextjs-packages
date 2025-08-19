@@ -1,7 +1,8 @@
 // /src/settings.ts
 
-import { ISettingsStorage } from "./storage/ISettingsStorage";
 import { Logger, LogLevel } from "@core-mfg/nextjs-logging";
+
+import { ISettingsStorage } from "@/storage/ISettingsStorage";
 
 Logger.setModuleGlobalLevel("warn");
 

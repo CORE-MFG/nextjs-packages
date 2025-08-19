@@ -1,7 +1,9 @@
-import { ISettingsStorage } from "./ISettingsStorage";
-import { Settings } from "../settings";
 import Redis from "ioredis";
+
 import { Logger } from "@core-mfg/nextjs-logging";
+
+import { Settings } from "@/settings";
+import { ISettingsStorage } from "@/storage/ISettingsStorage";
 
 const logger = new Logger("RedisStorage", "unknown", "debug", true);
 

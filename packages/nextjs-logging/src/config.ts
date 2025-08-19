@@ -1,7 +1,7 @@
 // /src/lib/logging/loggingConfig.ts
 
-import { ILoggingStorage } from './loggingStorage';
-import { LogConfig, LogConfigEntry, LogLevel, LogType } from '../levels';
+import { ILoggingStorage } from '@/storage/loggingStorage';
+import { LogConfig, LogConfigEntry, LogLevel, LogType } from '@/levels';
 
 export class LoggingConfig {
   private storagePromise: Promise<ILoggingStorage>;
@@ -57,6 +57,6 @@ export class LoggingConfig {
 }
 
 export async function createLoggingConfig() {
-  const { createLoggingStorage } = await import('./loggingStorageFactory');
+  const { createLoggingStorage } = await import('./storage/loggingStorageFactory');
   return new LoggingConfig(createLoggingStorage());
 }

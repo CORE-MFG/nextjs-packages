@@ -1,25 +1,26 @@
 {
-    "name": "@core-mfg/nextjs-packages",
-    "private": true,
-    "version": "0.0.0",
-    "description": "Monorepo for Next.js apps and shared packages",
-    "license": "MIT",
-    "packageManager": "pnpm@10.6.3",
-  
-    "scripts": {
-      "dev": "pnpm --parallel --filter './apps/*' dev",
-      "build": "pnpm --filter ./packages/* build",
-      "lint": "pnpm --recursive lint",
-      "test": "vitest",
-      "test:watch": "vitest --watch",
-      "clean": "pnpm --recursive exec rm -rf dist node_modules"
-    },
-  
-    "devDependencies": {
-      "typescript": "^5.4.0",
-      "ts-node": "^10.9.2",
-      "@types/node": "^20.11.30",
-      "vitest": "^3.2.4"
-    }
+  "name": "@core-mfg/nextjs-packages",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Monorepo for Next.js apps and shared packages",
+  "license": "MIT",
+  "packageManager": "pnpm@10.6.3",
+  "scripts": {
+    "dev": "pnpm --parallel --filter './apps/*' dev",
+    "build": "pnpm -r --filter @core-mfg/* build",
+    "lint": "pnpm --recursive lint",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "clean": "pnpm --recursive exec rm -rf dist node_modules"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.30",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.0",
+    "vitest": "^3.2.4"
+  },
+  "dependencies": {
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
   }
-  
+}

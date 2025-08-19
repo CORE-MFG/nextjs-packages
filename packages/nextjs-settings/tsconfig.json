@@ -52,7 +52,12 @@
     "forceConsistentCasingInFileNames": true, 
 
     // Skip type-checking of external modules to speed up compilation
-    "skipLibCheck": true           
+    "skipLibCheck": true,  
+    
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
   },
 
   // Include all TS files under src

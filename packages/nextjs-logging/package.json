@@ -20,7 +20,7 @@
   },
   "browser": "./dist/index.js",
   "scripts": {
-    "test": "vitest -c vitest.config.ts",
+    "test": "vitest",
     "test:tsc": "tsc -p tsconfig.test.json --noEmit",
     "test:watch": "vitest --watch",
     "build": "tsc",
@@ -30,19 +30,6 @@
   "author": "alex@coremfg.io",
   "license": "MIT",
   "description": "",
-  "peerDependencies": {
-    "react": ">=18.2.0",
-    "react-dom": ">=18.2.0",
-    "next": "^13.4.0"
-  },
-  "devDependencies": {
-    "typescript": "^5.9.2",
-    "@types/node": "^24.3.0",
-    "@types/react": "^18.2.14",
-    "@types/react-dom": "^18.2.7",
-    "dotenv": "^17.2.1",    
-    "vitest": "^3.2.4"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/core-mfg/nextjs-packages.git",
@@ -51,5 +38,10 @@
   "bugs": {
     "url": "https://github.com/core-mfg/nextjs-packages/issues"
   },
-  "homepage": "https://github.com/core-mfg/nextjs-packages#readme"
+  "homepage": "https://github.com/core-mfg/nextjs-packages#readme",
+  "peerDependencies": {
+    "react": ">=18.2.0 <20",
+    "react-dom": ">=18.2.0 <20",
+    "next": "^13.4.0"
+  }
 }

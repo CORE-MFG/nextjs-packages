@@ -20,6 +20,7 @@ describe('SettingsManager', () => {
       defaults: { connection_count: 0 } as MySettings,
       settingsPrefix: 'api',
       storage: inMemoryStorage,
+      logLevel: "debug",
     });
   
     settings.initialize();
@@ -35,7 +36,8 @@ describe('SettingsManager', () => {
     expect(settings.get().connection_count).toBe(1);
   });
 
-  it('applies env variables if present', () => {
+  it('applies env variables if present', async () => {
+    process.env.API_CONNECTION_COUNT = '3';
     settings.refresh();
     expect(settings.get().connection_count).toBe(3);
   });

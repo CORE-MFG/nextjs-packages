@@ -43,8 +43,8 @@ importers:
   packages/nextjs-settings:
     dependencies:
       '@core-mfg/nextjs-logging':
-        specifier: workspace:*
-        version: link:../nextjs-logging
+        specifier: ^0.0.1
+        version: 0.0.1(next@13.5.11(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       ioredis:
         specifier: ^5.7.0
         version: 5.7.0
@@ -69,6 +69,13 @@ importers:
         version: 17.2.1
 
 packages:
+
+  '@core-mfg/nextjs-logging@0.0.1':
+    resolution: {integrity: sha512-O0HYKnVrMeGUTXFPwGVVoH/nNs3CXVrtssdnythKLERVtt+NvDc8/SfLlmqfpCSEd4L6m+pMtLS/gR4vbI/PsQ==, tarball: https://npm.pkg.github.com/download/@core-mfg/nextjs-logging/0.0.1/1d057a3436f42499f6242c0fe96c97b5344d18d6}
+    peerDependencies:
+      next: ^13.4.0
+      react: '>=18.2.0 <20'
+      react-dom: '>=18.2.0 <20'
 
   '@cspotcode/source-map-support@0.8.1':
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
@@ -865,6 +872,12 @@ packages:
         optional: true
 
 snapshots:
+
+  '@core-mfg/nextjs-logging@0.0.1(next@13.5.11(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+    dependencies:
+      next: 13.5.11(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
 
   '@cspotcode/source-map-support@0.8.1':
     dependencies:

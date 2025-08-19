@@ -1,6 +1,6 @@
 // lib/logging/loggingStorage.ts
 
-import { LogConfig, LogConfigEntry, LogLevel, LogType} from "@/levels";
+import { LogConfig, LogConfigEntry, LogLevel, LogType} from "../levels";
 
 /**
  * Interface for logging storage

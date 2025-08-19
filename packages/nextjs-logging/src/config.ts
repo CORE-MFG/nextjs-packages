@@ -1,7 +1,7 @@
 // /src/lib/logging/loggingConfig.ts
 
-import { ILoggingStorage } from '@/storage/loggingStorage';
-import { LogConfig, LogConfigEntry, LogLevel, LogType } from '@/levels';
+import { ILoggingStorage } from './storage/loggingStorage';
+import { LogConfig, LogConfigEntry, LogLevel, LogType } from './levels';
 
 export class LoggingConfig {
   private storagePromise: Promise<ILoggingStorage>;

@@ -1,8 +1,8 @@
 // /src/logging/loggingStorage_File.ts
 
-import { isClient } from "@/utils/isclient";
-import { LogConfig, LogConfigEntry, LogLevel, LogType } from "@/levels";
-import { ILoggingStorage } from "@/storage/loggingStorage";
+import { isClient } from "../utils/isclient";
+import { LogConfig, LogConfigEntry, LogLevel, LogType } from "../levels";
+import { ILoggingStorage } from "./loggingStorage";
 
 export class FileLoggingStorage implements ILoggingStorage {
   private filePath!: string;

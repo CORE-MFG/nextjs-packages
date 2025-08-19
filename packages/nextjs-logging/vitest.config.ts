@@ -8,10 +8,5 @@ export default defineConfig({
   test: {
     ...rootConfig.test,
     include: ["test/**/*.test.ts"], // package-local tests only
-  },
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, 'src'), // <- map @ to ./src
-    },
-  },
+  }
 });

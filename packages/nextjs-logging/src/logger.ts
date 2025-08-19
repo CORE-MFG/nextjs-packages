@@ -8,8 +8,8 @@ import {
   LogConfigEntry,
   LogType,
   LogConfig,
-} from "@/levels";
-import { isClient } from "@/utils/isclient";
+} from "./levels";
+import { isClient } from "./utils/isclient";
 
 // // Client-side cached config & fetch helper
 // let clientConfigCache: LogConfig | null = null;

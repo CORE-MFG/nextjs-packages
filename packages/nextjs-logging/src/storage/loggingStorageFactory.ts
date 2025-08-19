@@ -2,7 +2,7 @@
 
 'use server';
 
-import { ILoggingStorage } from '@/storage/loggingStorage';
+import { ILoggingStorage } from './loggingStorage';
 
 export async function createLoggingStorage(): Promise<ILoggingStorage> {
   const type = process.env.LOGGING_STORAGE_TYPE || 'settings';
@@ -11,7 +11,7 @@ export async function createLoggingStorage(): Promise<ILoggingStorage> {
     if (typeof window !== 'undefined') {
       throw new Error('FileLoggingStorage is not available in the browser');
     }
-    const { FileLoggingStorage } = await import('@/storage/loggingStorage_File');
+    const { FileLoggingStorage } = await import('./loggingStorage_File');
     return new FileLoggingStorage();
   }
 

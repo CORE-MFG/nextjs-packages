@@ -1,0 +1,52 @@
+{
+  "name": "@core-mfg/nextjs-settings",
+  "version": "0.0.1",
+  "main": "dist/index.js",
+  "type": "module",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./client": {
+      "import": "./dist/client.js",
+      "types": "./dist/client.d.ts"
+    },
+    "./server": {
+      "import": "./dist/server.js",
+      "types": "./dist/server.d.ts"
+    }
+  },
+  "scripts": {
+    "test": "vitest -c vitest.config.ts",  
+    "test:tsc": "tsc -p tsconfig.test.json --noEmit",
+    "test:watch": "vitest --watch",
+    "build": "tsc",
+    "prepare": "pnpm build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "peerDependencies": {
+    "react": ">=18.2.0",
+    "react-dom": ">=18.2.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.2",
+    "@types/node": "^24.3.0",
+    "dotenv": "^17.2.1",
+    "@types/react": "^18.2.14",
+    "@types/react-dom": "^18.2.7",
+    "vitest": "^3.2.4"
+  },
+  "dependencies": {
+    "ioredis": "^5.7.0",
+    "zustand": "5.0.5",
+    "nextjs-logging": "workspace:*"
+  }
+}

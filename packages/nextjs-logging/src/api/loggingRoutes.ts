@@ -7,14 +7,17 @@ import { Logger } from '../logger';
 
 export async function getServerLoggersHandler(req: NextRequest) {
   try {
+    console.log("[LoggingRoutes] getting loggers from server registry");
     const loggers = registry.list();
-    if (!loggers) {
-      return NextResponse.json({ loggingConfig: [] });
-    }
-    return NextResponse.json({ loggingConfig: Object.values(loggers).map((logger: Logger) => logger.toJSON()) });
+    console.log("[LoggingRoutes] loggers", loggers);
+    console.log("[LoggingRoutes] count of loggers", Object.values(loggers).length);
+    return NextResponse.json({
+      loggingConfig: Object.values(loggers).map(
+        (logger) => (logger as Logger).toJSON()
+      ),
+    });
   } catch (error) {
-    console.error('Failed to get logging config:', error);
-    return NextResponse.json({ error: 'Failed to get logging config' }, { status: 500 });
+    return NextResponse.json({ error: "Failed to fetch loggers" }, { status: 500 });
   }
 }
 

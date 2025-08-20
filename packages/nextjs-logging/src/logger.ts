@@ -12,6 +12,8 @@ import {
 import { useLoggerStore } from "./registry/clientRegistry";
 import { isClient } from "./utils/isclient";
 
+import { registry } from "./registry/serverRegistry";
+
 // // Client-side cached config & fetch helper
 // let clientConfigCache: LogConfig | null = null;
 // let clientConfigFetchPromise: Promise<void> | null = null;
@@ -171,7 +173,8 @@ export class Logger {
       );
     } else {
       // Server: import loggingConfig and check/set
-      const { registry } = await import("./registry/serverRegistry");
+      console.log("[Logger] registering logger on server", this.name);
+      // const { registry } = await import("./registry/serverRegistry");
       registry.register(this);
     }
   }

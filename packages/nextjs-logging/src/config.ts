@@ -23,6 +23,7 @@ export class LoggingConfig {
       level: entryFromConfig?.level || 'info',
       type: entryFromConfig?.type || 'unknown',
       errorVerbose: entryFromConfig?.errorVerbose ?? false,
+      enabled: entryFromConfig?.enabled ?? true
     };
   
     return loggerConfigEntry;

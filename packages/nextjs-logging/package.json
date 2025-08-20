@@ -1,6 +1,6 @@
 {
   "name": "@core-mfg/nextjs-logging",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
   },
@@ -43,8 +43,15 @@
   },
   "homepage": "https://github.com/core-mfg/nextjs-packages#readme",
   "peerDependencies": {
-    "react": ">=18.2.0 <20",
-    "react-dom": ">=18.2.0 <20",
-    "next": "^13.4.0"
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "next": "^15.3.2",
+    "zustand": "^5.0.5"
+  },
+  "devDependencies": {
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "next": "^15.3.2",
+    "zustand": "^5.0.5"
   }
 }

@@ -1,10 +1,13 @@
 export type LogType = "service" | "component" | "hook" | "class" | "package" | "unknown";
 
+export const VALID_LOG_TYPES: LogType[] = ["service", "component", "hook", "class", "package", "unknown"];
+
 export type LogConfigEntry = {
   name: string;
   level: LogLevel;
   type: LogType;
   errorVerbose: boolean;
+  enabled: boolean;
 }
 
 export type LogLevel =

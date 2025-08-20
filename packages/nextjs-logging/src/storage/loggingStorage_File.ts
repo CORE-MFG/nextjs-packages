@@ -57,7 +57,8 @@ export class FileLoggingStorage implements ILoggingStorage {
         name: logger.name,
         level: logger.level, 
         type: logger.type, 
-        errorVerbose: logger.errorVerbose 
+        errorVerbose: logger.errorVerbose,
+        enabled: logger.enabled
       });
     } else {
       entry.level = logger.level;
@@ -76,7 +77,8 @@ export class FileLoggingStorage implements ILoggingStorage {
         name: loggerName,
         level: "debug", 
         type: "service", 
-        errorVerbose: false 
+        errorVerbose: false,
+        enabled: true
       });
     }
     return entry!;

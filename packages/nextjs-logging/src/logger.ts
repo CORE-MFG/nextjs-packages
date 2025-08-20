@@ -9,6 +9,7 @@ import {
   LogType,
   LogConfig,
 } from "./levels";
+import { useLoggerStore } from "./registry/clientRegistry";
 import { isClient } from "./utils/isclient";
 
 // // Client-side cached config & fetch helper
@@ -56,22 +57,32 @@ import { isClient } from "./utils/isclient";
 // Module-instance scoped "global config" per package
 let moduleGlobalLogLevel: LogLevel | null = null;
 
+let loggerStorageMedium: "file" | "redis" | "memory" = "memory";
+
 export class Logger {
   private _name: string;
   private _type: LogType;
   private _errorVerbose: boolean;
   private _level: LogLevel;
+  private _enabled: boolean;
+
+  // --- New: client subscription cleanup handle
+  private unsubscribe?: () => void;
 
   constructor(
     name: string,
     type: LogType = "unknown",
     level: LogLevel = "info",
-    errorVerbose = false
+    errorVerbose = false,
+    enabled = true
   ) {
     this._name = name;
     this._type = type;
     this._errorVerbose = errorVerbose;
     this._level = level;
+    this._enabled = enabled;
+
+    this.init();
   }
 
   get name(): string {
@@ -83,8 +94,29 @@ export class Logger {
   get errorVerbose(): boolean {
     return this._errorVerbose;
   }
+  set errorVerbose(errorVerbose: boolean) {
+    this._errorVerbose = errorVerbose;
+  }
   get level(): LogLevel {
     return this._level;
+  }
+  set level(level: LogLevel) {
+    this._level = level;
+  }
+  get enabled(): boolean {
+    return this._enabled;
+  }
+  set enabled(enabled: boolean) {
+    this._enabled = enabled;
+  }
+
+  // Module-instance global control
+  static setModuleGlobalStorageMedium(medium: "file" | "redis" | "memory") {
+    loggerStorageMedium = medium;
+  }
+
+  static getModuleGlobalStorageMedium(): "file" | "redis" | "memory" {
+    return loggerStorageMedium;
   }
 
   // Module-instance global control
@@ -101,69 +133,92 @@ export class Logger {
   }
 
   // Call this on logger creation to ensure feature exists in config
-  // async init(): Promise<void> {
-  //   if (!isClient()) {
-  //     // Server: import loggingConfig and check/set
-  //     const { createLoggingConfig } = await import(
-  //       "./loggingConfig"
-  //     );
-  //     const loggingConfig = await createLoggingConfig();
-  //     const config = await loggingConfig.getConfig();
+  async init(): Promise<void> {
+    if (isClient()) {
+      this.unsubscribe?.();
 
-  //     const existingEntry = config.find(entry => entry.name === this.name);
-  //     if (!existingEntry) {
-  //       await loggingConfig.set({
+      // Client: fetch current config
+      const store = useLoggerStore.getState();
+
+      const existingEntry = store.loggers[this.name];
+      if (existingEntry) {
+        // --- Update current logger from store if found (to persist existing settings)
+        this._level = existingEntry.level;
+        this._enabled = existingEntry.enabled;
+        this._errorVerbose = existingEntry.errorVerbose;
+        this._type = existingEntry.type;
+      }
+      else {
+        // --- Create entry in store if not exists
+        store.setLogger({
+          name: this.name,
+          level: this.level,
+          type: this.type,
+          errorVerbose: this.errorVerbose,
+          enabled: this.enabled,
+        });
+      }
+
+      // --- Subscribe this logger to its own store entry
+      this.unsubscribe = useLoggerStore.subscribe(
+        (state) => state.loggers[this._name],
+        (entry) => {
+          if (!entry) return;
+          this._level = entry.level;
+          this._enabled = entry.enabled;
+          this._errorVerbose = entry.errorVerbose;
+        }
+      );
+    } else {
+      // Server: import loggingConfig and check/set
+      const { registry } = await import("./registry/serverRegistry");
+      registry.register(this);
+    }
+  }
+
+  // else {
+  //   // Client: fetch current config
+  //   await fetchClientLoggingConfig();
+
+  //   const existingEntry = clientConfigCache?.find(entry => entry.name === this.name);
+  //   if (!existingEntry) {
+  //     try {
+  //       const logConfigEntry = {
   //         name: this.name,
   //         level: this.level,
   //         type: this.type,
-  //         errorVerbose: this.errorVerbose
+  //         errorVerbose: this.errorVerbose,
+  //       };
+
+  //       await fetch("/ui/config/logging", {
+  //         method: "POST",
+  //         headers: { "Content-Type": "application/json" },
+  //         body: JSON.stringify(logConfigEntry),
   //       });
-  //     }
-  //   } else {
-  //     // Client: fetch current config
-  //     await fetchClientLoggingConfig();
 
-  //     const existingEntry = clientConfigCache?.find(entry => entry.name === this.name);
-  //     if (!existingEntry) {
-  //       try {
-  //         const logConfigEntry = {
-  //           name: this.name,
-  //           level: this.level,
-  //           type: this.type,
-  //           errorVerbose: this.errorVerbose,
-  //         };
-
-  //         await fetch("/ui/config/logging", {
-  //           method: "POST",
-  //           headers: { "Content-Type": "application/json" },
-  //           body: JSON.stringify(logConfigEntry),
-  //         });
-
-  //         // update client cache with new entry
-  //         if (clientConfigCache) {
-  //           const newEntry = { name: this.name, level: this.level, type: this.type, errorVerbose: this.errorVerbose };
-  //           const existingIndex = clientConfigCache.findIndex(entry => entry.name === this.name);
-  //           if (existingIndex >= 0) {
-  //             clientConfigCache[existingIndex] = newEntry;
-  //           } else {
-  //             clientConfigCache.push(newEntry);
-  //           }
-  //           updateClientCache(clientConfigCache);
+  //       // update client cache with new entry
+  //       if (clientConfigCache) {
+  //         const newEntry = { name: this.name, level: this.level, type: this.type, errorVerbose: this.errorVerbose };
+  //         const existingIndex = clientConfigCache.findIndex(entry => entry.name === this.name);
+  //         if (existingIndex >= 0) {
+  //           clientConfigCache[existingIndex] = newEntry;
+  //         } else {
+  //           clientConfigCache.push(newEntry);
   //         }
-  //       } catch {
-  //         // fail silently
+  //         updateClientCache(clientConfigCache);
   //       }
+  //     } catch {
+  //       // fail silently
   //     }
-
-  //     // Subscribe to config changes for this logger
-  //     subscribeToLoggerConfig((config) => {
-  //       const entry = config.find((entry) => entry.name === this.name);
-  //       if (entry) {
-  //         this.level = entry.level;
-  //       }
-  //     });
   //   }
-  // }
+
+  //   // Subscribe to config changes for this logger
+  //   subscribeToLoggerConfig((config) => {
+  //     const entry = config.find((entry) => entry.name === this.name);
+  //     if (entry) {
+  //       this.level = entry.level;
+  //     }
+  //   });
 
   // private async getCurrentLevel(): Promise<LogLevel> {
   //   if (!isClient()) {
@@ -189,7 +244,8 @@ export class Logger {
 
   private async shouldLog(level: LogLevel): Promise<boolean> {
     const effectiveLevel = moduleGlobalLogLevel ?? this._level;
-    const shouldLog =  LOG_LEVELS[level] <= LOG_LEVELS[effectiveLevel];
+    const shouldLog =
+      this._enabled && LOG_LEVELS[level] <= LOG_LEVELS[effectiveLevel];
     return shouldLog;
   }
 
@@ -278,5 +334,30 @@ export class Logger {
   }
   start(message: string, data?: unknown) {
     this.log("start", message, data);
+  }
+
+  /** Clean up any subscriptions for this logger */
+  public destroy(): void {
+    if (this.unsubscribe) {
+      this.unsubscribe(); // unsubscribe from Zustand store
+      // this.unsubscribe = undefined; // avoid double-unsubscribe
+    }
+  }
+
+  /**
+   * Convert the logger to a JSON object
+   * @returns A JSON object representing the logger
+   */
+  toJSON(): LogConfigEntry {
+    return { name: this.name, level: this.level, type: this.type, errorVerbose: this.errorVerbose, enabled: this.enabled };
+  }
+
+  /**
+   * Create a logger from a JSON object
+   * @param data A JSON object representing the logger
+   * @returns A logger
+   */
+  static fromJSON(data: LogConfigEntry): Logger {
+    return new Logger(data.name, data.type, data.level, data.errorVerbose, data.enabled);
   }
 }

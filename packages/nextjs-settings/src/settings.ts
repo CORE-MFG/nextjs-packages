@@ -2,7 +2,8 @@
 
 import { Logger, LogLevel } from "@core-mfg/nextjs-logging";
 
-import { ISettingsStorage } from "@/storage/ISettingsStorage";
+import { ISettingsStorage } from "./storage/ISettingsStorage";
+import { InMemoryStorage } from "./storage/InMemoryStorage";
 
 Logger.setModuleGlobalLevel("warn");
 
@@ -21,11 +22,10 @@ export interface Settings {
  */
 export interface SettingsManagerOptions<T extends Settings = Settings> {
   name: string;
-  storage: ISettingsStorage<T>;
+  storage?: ISettingsStorage<T>;
   defaults?: T;
   settingsPrefix?: string;
   allowExtra?: boolean;
-
   logLevel?: LogLevel;
 }
 
@@ -35,11 +35,11 @@ export interface SettingsManagerOptions<T extends Settings = Settings> {
  */
 export class SettingsManager<T extends Settings = Settings> {
   private _settings: T = {} as T;
-  private _storage: ISettingsStorage<T> = {} as ISettingsStorage<T>;
-  private _name: string = "";
-  private _allowExtra: boolean = false;
-  private settings_prefix: string = "";
-  private _syncedFromEnv: boolean = false;
+  private _storage: ISettingsStorage<T>;
+  private _name: string;
+  private _allowExtra: boolean;
+  private _settingsPrefix: string;
+  private _envVarsLoaded: boolean = false;
   private _logger: Logger;
 
   constructor(options: SettingsManagerOptions<T>) {
@@ -53,20 +53,16 @@ export class SettingsManager<T extends Settings = Settings> {
     } = options;
 
     Logger.setModuleGlobalLevel(logLevel);
-    this._logger = new Logger(name, "class", logLevel, true);
+    this._logger = new Logger(name, "class", logLevel, true, true);
 
     this.log.start("constructor");
     this.log.debug("options", options);
 
     this._name = name;
-    this._storage = storage;
-
+    this._storage = storage ?? new InMemoryStorage();
     this._settings = { ...defaults };
-    this.settings_prefix = settingsPrefix;
+    this._settingsPrefix = settingsPrefix;
     this._allowExtra = allowExtra;
-
-
-    this.initialize();
   }
 
   get name(): string {
@@ -77,8 +73,8 @@ export class SettingsManager<T extends Settings = Settings> {
     return this._storage;
   }
 
-  get syncedFromEnv(): boolean {
-    return this._syncedFromEnv;
+  get envVarsLoaded(): boolean {
+    return this._envVarsLoaded;
   }
 
   get log(): Logger {
@@ -88,12 +84,12 @@ export class SettingsManager<T extends Settings = Settings> {
   async initialize() {
     this.log.start("initializing", this.name);
 
-    if (this._storage && this.syncedFromEnv) {
-      const loaded = await this._storage.load();
-      this._settings = { ...this._settings, ...(loaded ?? {}) };
-    } else {
-      this.loadFromEnvVars();
-    }
+    // Step 1: Apply env vars
+    this.loadFromEnvVars();
+
+    // Step 2: Overlay storage settings
+    const loaded = await this._storage.load();
+    this._settings = { ...this._settings, ...(loaded ?? {}) };
 
     this.log.success("initialized", this.name);
   }
@@ -102,28 +98,38 @@ export class SettingsManager<T extends Settings = Settings> {
     return this._settings;
   }
 
-  async set(newSettings: Partial<T>) {
-    this._settings = { ...this._settings, ...newSettings };
-    if (this._storage) {
-      await this._storage.save(this._settings);
-    }
+  /** Return a single setting */
+  getValue<K extends keyof T>(key: K): T[K] {
+    return this._settings[key];
   }
 
+  /** Set a single setting */
+  setValue<K extends keyof T>(key: K, value: T[K]) {
+    this._settings[key] = value;
+    this._storage.save(this._settings);
+  }
+
+  async set(newSettings: Partial<T>) {
+    this._settings = { ...this._settings, ...newSettings };
+    await this._storage.save(this._settings);
+  }
+
+  /** Re-sync from env + storage */
   async refresh() {
     this.log.start("refreshing", this.name);
-    if (this._storage && !this.syncedFromEnv) {
-      const loaded = await this._storage.load();
-      this._settings = { ...this._settings, ...(loaded ?? {}) };
-    } else {
-      this.loadFromEnvVars();
-    }
+
+    this.loadFromEnvVars();
+    const loaded = await this._storage.load();
+    this._settings = { ...this._settings, ...(loaded ?? {}) };
+
     this.log.success("refreshed", this.name);
   }
 
   /** Internal: assign env vars to matching keys in settings */
   private loadFromEnvVars() {
     this.log.start("loading from env vars", this.name);
-    const prefix = this.settings_prefix.toUpperCase();
+    const prefix = this._settingsPrefix.toUpperCase();
+
     if (this._allowExtra && prefix) {
       // Apply all env vars that start with the prefix
       const fullPrefix = prefix + "_";
@@ -142,23 +148,42 @@ export class SettingsManager<T extends Settings = Settings> {
         }
       }
     }
-    this._syncedFromEnv = true;
-    this.log.success("loaded from env vars", this.name);
+    this._envVarsLoaded = true;
+    this.log.success("loaded settings from env vars");
   }
 
   /** Helper to parse and assign env var values */
-  private assignEnvValue(key: keyof T, value: string) {
-    try {
-      this._settings[key] = JSON.parse(value);
-    } catch {
-      this._settings[key] = value as any;
+  // private assignEnvValue(key: keyof T, value: string) {
+  //   try {
+  //     this._settings[key] = JSON.parse(value);
+  //   } catch {
+  //     this._settings[key] = value as any;
+  //   }
+  // }
+  /** Helper to parse and assign env var values */
+  private assignEnvValue(key: keyof T, raw: string) {
+    let parsed: any = raw;
+
+    // Heuristic parsing before JSON
+    if (raw === "true" || raw === "false") {
+      parsed = raw === "true";
+    } else if (!isNaN(Number(raw))) {
+      parsed = Number(raw);
+    } else {
+      try {
+        parsed = JSON.parse(raw);
+      } catch {
+        parsed = raw;
+      }
     }
+
+    this._settings[key] = parsed;
   }
 
   /** Returns the env var name for a given key, using prefix if set */
   private getEnvVarName(key: string) {
-    if (this.settings_prefix) {
-      return `${this.settings_prefix}_${key}`.toUpperCase();
+    if (this._settingsPrefix) {
+      return `${this._settingsPrefix}_${key}`.toUpperCase();
     }
     return key.toUpperCase();
   }

@@ -30,21 +30,9 @@ jobs:
           echo "package_name=$PACKAGE_NAME" >> $GITHUB_OUTPUT
           echo "Building and publishing package: $PACKAGE_NAME"
 
-      # 4. Install dependencies using pnpm (conditionally bypass frozen lockfile)
-      - name: Install dependencies
-        run: |
-          npm install -g pnpm
-          # Array of packages that can bypass frozen lockfile
-          NON_FROZEN_PACKAGES=("nextjs-logging")
-          PACKAGE_NAME=${{ steps.extract-package.outputs.package_name }}
-
-          if [[ " ${NON_FROZEN_PACKAGES[@]} " =~ " ${PACKAGE_NAME} " ]]; then
-            echo "Skipping frozen-lockfile for package: $PACKAGE_NAME"
-            pnpm install --filter ./packages/${{ steps.extract-package.outputs.package_name }} --no-workspace-root-lockfile --no-frozen-lockfile
-          else
-            echo "Using frozen-lockfile for package: $PACKAGE_NAME"
-            pnpm install --filter ./packages/${{ steps.extract-package.outputs.package_name }} --frozen-lockfile
-          fi
+      # 4. Install dependencies using pnpm
+      - run: npm install -g pnpm
+      - run: pnpm install --frozen-lockfile
 
       # 5. Build specific package only
       - name: Build package

@@ -40,7 +40,7 @@ jobs:
 
           if [[ " ${NON_FROZEN_PACKAGES[@]} " =~ " ${PACKAGE_NAME} " ]]; then
             echo "Skipping frozen-lockfile for package: $PACKAGE_NAME"
-            pnpm install --filter ./packages/${{ steps.extract-package.outputs.package_name }} --no-frozen-lockfile
+            pnpm install --filter ./packages/${{ steps.extract-package.outputs.package_name }} --no-workspace-root-lockfile --no-frozen-lockfile
           else
             echo "Using frozen-lockfile for package: $PACKAGE_NAME"
             pnpm install --filter ./packages/${{ steps.extract-package.outputs.package_name }} --frozen-lockfile

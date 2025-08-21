@@ -1,6 +1,6 @@
 {
   "name": "@core-mfg/nextjs-settings",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
   },
@@ -51,7 +51,7 @@
     "dotenv": "^17.2.1"
   },
   "dependencies": {
-    "@core-mfg/nextjs-logging": "0.0.4",
+    "@core-mfg/nextjs-logging": "0.0.5",
     "ioredis": "5.7.0",
     "zustand": "5.0.5"
   }

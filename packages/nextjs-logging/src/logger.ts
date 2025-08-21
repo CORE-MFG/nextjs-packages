@@ -56,6 +56,8 @@ import { registry } from "./registry/serverRegistry";
 //   await clientConfigFetchPromise;
 // }
 
+let packageGlobalLogLevel: LogLevel = 'error';
+
 // Module-instance scoped "global config" per package
 let moduleGlobalLogLevel: LogLevel | null = null;
 
@@ -76,7 +78,8 @@ export class Logger {
     type: LogType = "unknown",
     level: LogLevel = "info",
     errorVerbose = false,
-    enabled = true
+    enabled = true,
+    register = true
   ) {
     this._name = name;
     this._type = type;
@@ -84,7 +87,7 @@ export class Logger {
     this._level = level;
     this._enabled = enabled;
 
-    this.init();
+    this.init(register);
   }
 
   get name(): string {
@@ -130,12 +133,21 @@ export class Logger {
     return moduleGlobalLogLevel;
   }
 
+  // Module-instance global control
+  static setPackageGlobalLevel(level: LogLevel) {
+    packageGlobalLogLevel = level;
+  }
+
+  static getPackageGlobalLevel(): LogLevel {
+    return packageGlobalLogLevel;
+  }
+
   ensureEntryExists(entry: LogConfigEntry) {
     // TODO: implement a single function that ensures the entry exists in the config
   }
 
   // Call this on logger creation to ensure feature exists in config
-  async init(): Promise<void> {
+  async init(register = true): Promise<void> {
     if (isClient()) {
       this.unsubscribe?.();
 
@@ -172,10 +184,10 @@ export class Logger {
         }
       );
     } else {
-      // Server: import loggingConfig and check/set
-      console.log("[Logger] registering logger on server", this.name);
-      // const { registry } = await import("./registry/serverRegistry");
-      registry.register(this);
+      if (register) {
+        console.log("[Logger] registering logger on server", this.name);
+        registry.register(this);
+      }
     }
   }
 

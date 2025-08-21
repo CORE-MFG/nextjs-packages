@@ -1,5 +1,16 @@
 // src/registry/baseRegistry.ts
 
+import { Logger } from "../logger";
+
+let _log: Logger | null = null;
+
+function log() {
+  if (!_log) {
+    _log = new Logger("Registry", "service", Logger.getPackageGlobalLevel(), true, true, false);
+  }
+  return _log;
+}
+
 export interface Registrable {
   name: string;
 }
@@ -8,34 +19,39 @@ export class Registry<T extends Registrable> {
   private items = new Map<string, T>();
 
   register(item: T) {
-    console.log("[Registry] registering item", item.name);
-    console.log("[Registry] current count of items", this.items.size);
+    log().start("Registering item", item.name);
+    log().info("Current count of items", this.items.size);
     if (!this.items.has(item.name)) {
       this.items.set(item.name, item);
     }
-    console.log("[Registry] items", Array.from(this.items.keys()));
-    console.log("[Registry] count of items after new", this.items.size);
+    log().debug("Items", Array.from(this.items.keys()));
+    log().info("Count of items after new", this.items.size);
+    log().success("Item registered", item.name);
   }
 
   list(): Record<string, T> {
-    console.log("[Registry] listing items");
-    console.log("[Registry] current count of items", this.items.size);
-    console.log("[Registry] items", Array.from(this.items.keys()));
-    console.log("[Registry] count of items after list", this.items.size);
+    log().start("Listing items");
+    log().info("Current count of items", this.items.size);
     return Object.fromEntries(this.items);
   }
 
   get(name: string): T | undefined {
-    console.log("[Registry] getting item", name);
-    console.log("[Registry] current count of items", this.items.size);
-    console.log("[Registry] items", Array.from(this.items.keys()));
-    console.log("[Registry] count of items after get", this.items.size);
+    log().start("Getting item", name);
+    log().info("Current count of items", this.items.size);
+    log().debug("Items", Array.from(this.items.keys()));
     return this.items.get(name);
   }
 
   update(item: T) {
+    log().start("Updating item", item.name);
+    log().info("Current count of items", this.items.size);
+    log().debug("Item", item);
+
     if (this.items.has(item.name)) {
       this.items.set(item.name, item);
+      log().success("Item updated", item.name);
+    } else {
+      log().error("Item not found", item.name);
     }
   }
 }

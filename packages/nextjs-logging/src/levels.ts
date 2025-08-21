@@ -1,6 +1,6 @@
-export type LogType = "service" | "component" | "hook" | "class" | "package" | "unknown";
+export type LogType = "service" | "component" | "hook" | "class" | "api" | "package" | "unknown";
 
-export const VALID_LOG_TYPES: LogType[] = ["service", "component", "hook", "class", "package", "unknown"];
+export const VALID_LOG_TYPES: LogType[] = ["service", "component", "hook", "class", "api", "package", "unknown"];
 
 export type LogConfigEntry = {
   name: string;

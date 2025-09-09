@@ -1,8 +1,9 @@
 {
   "name": "@core-mfg/nextjs-logging",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
+    "registry": "https://npm.pkg.github.com",
+    "access": "public"
   },
   "repository": {
     "type": "git",
@@ -34,14 +35,14 @@
     "build": "tsc",
     "prepare": "npm run build"
   },
-  "keywords": [],
+  "keywords": ["nextjs", "logging", "react"],
   "author": "alex@coremfg.io",
   "license": "MIT",
-  "description": "",
+  "description": "A logging library for NextJS applications",
   "bugs": {
     "url": "https://github.com/core-mfg/nextjs-packages/issues"
   },
-  "homepage": "https://github.com/core-mfg/nextjs-packages#readme",
+  "homepage": "https://github.com/CORE-MFG/nextjs-packages/tree/main/packages/nextjs-logging#readme",
   "peerDependencies": {
     "react": "^19.1.0",
     "react-dom": "^19.1.0",

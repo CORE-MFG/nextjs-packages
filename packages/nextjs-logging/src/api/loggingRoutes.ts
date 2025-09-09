@@ -4,7 +4,7 @@ import { isValidLogLevel, LOG_LEVELS, LogConfigEntry, VALID_LOG_TYPES } from '..
 import { registry } from '../registry/serverRegistry';
 import { Logger } from '../logger';
 
-const log = new Logger("LoggingRoutes", "api", Logger.getPackageGlobalLevel(), true, true);
+const log = new Logger("LoggingRoutes", "api", Logger.getPackageGlobalLevel(), true, Logger.getPackageGlobalLogEnabled(), false);
 
 export async function getServerLoggersHandler(req: NextRequest) {
   try {

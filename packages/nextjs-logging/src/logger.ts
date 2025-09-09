@@ -57,6 +57,7 @@ import { registry } from "./registry/serverRegistry";
 // }
 
 let packageGlobalLogLevel: LogLevel = 'error';
+let pacakgeGlobalLogEnabled: boolean = false;
 
 // Module-instance scoped "global config" per package
 let moduleGlobalLogLevel: LogLevel | null = null;
@@ -140,6 +141,14 @@ export class Logger {
 
   static getPackageGlobalLevel(): LogLevel {
     return packageGlobalLogLevel;
+  }
+
+  static setPackageGlobalLogEnabled(enabled: boolean) {
+    pacakgeGlobalLogEnabled = enabled;
+  }
+  
+  static getPackageGlobalLogEnabled(): boolean {
+    return pacakgeGlobalLogEnabled;
   }
 
   ensureEntryExists(entry: LogConfigEntry) {
@@ -372,7 +381,7 @@ export class Logger {
    * @param data A JSON object representing the logger
    * @returns A logger
    */
-  static fromJSON(data: LogConfigEntry): Logger {
-    return new Logger(data.name, data.type, data.level, data.errorVerbose, data.enabled);
+  static fromJSON(data: LogConfigEntry, register = true): Logger {
+    return new Logger(data.name, data.type, data.level, data.errorVerbose, data.enabled, register);
   }
 }

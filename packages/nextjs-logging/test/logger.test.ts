@@ -26,7 +26,7 @@ describe('Logger', () => {
 
   describe('Logger Creation', () => {
     it('should create logger with default values', () => {
-      const logger = new Logger('test-logger');
+      const logger = new Logger('test-logger', 'unknown', 'info', false, true, false);
       expect(logger.name).toBe('test-logger');
       expect(logger.type).toBe('unknown');
       expect(logger.level).toBe('info');
@@ -34,7 +34,7 @@ describe('Logger', () => {
     });
 
     it('should create logger with custom values', () => {
-      const logger = new Logger('custom-logger', 'service', 'warn', true);
+      const logger = new Logger('custom-logger', 'service', 'warn', true, true, false);
       expect(logger.name).toBe('custom-logger');
       expect(logger.type).toBe('service');
       expect(logger.level).toBe('warn');
@@ -44,7 +44,7 @@ describe('Logger', () => {
 
   describe('All Log Levels', () => {
     it('should log all levels when logger is set to trace', async () => {
-      const logger = new Logger('trace-logger', 'component', 'trace', false);
+      const logger = new Logger('trace-logger', 'component', 'trace', false, true, false);
 
       await logger.fatal('Fatal message');
       await logger.error('Error message');
@@ -62,7 +62,7 @@ describe('Logger', () => {
     });
 
     it('should respect log level filtering', async () => {
-      const logger = new Logger('warn-logger', 'component', 'warn', false);
+      const logger = new Logger('warn-logger', 'component', 'warn', false, true, false);
 
       await logger.debug('Debug message');  // Should not log
       await logger.info('Info message');    // Should not log
@@ -77,7 +77,7 @@ describe('Logger', () => {
 
   describe('Message Formatting', () => {
     it('should format messages with logger name and level', async () => {
-      const logger = new Logger('test-component', 'component', 'info', false);
+      const logger = new Logger('test-component', 'component', 'info', false, true, false);
       
       await logger.info('Test message');
       
@@ -87,7 +87,7 @@ describe('Logger', () => {
     });
 
     it('should include data when provided', async () => {
-      const logger = new Logger('data-logger', 'component', 'info', false);
+      const logger = new Logger('data-logger', 'component', 'info', false, true, false);
       const testData = { key: 'value' };
       
       await logger.info('Message with data', testData);
@@ -101,7 +101,7 @@ describe('Logger', () => {
 
   describe('Console Method Selection', () => {
     it('should use correct console methods for each level', async () => {
-      const logger = new Logger('console-logger', 'component', 'trace', false);
+      const logger = new Logger('console-logger', 'component', 'trace', false, true, false);
 
       // Test error console methods
       await logger.fatal('Fatal');
@@ -124,7 +124,7 @@ describe('Logger', () => {
 
   describe('Error Verbose Mode', () => {
     it('should include error object when errorVerbose is true', async () => {
-      const logger = new Logger('verbose-logger', 'component', 'error', true);
+      const logger = new Logger('verbose-logger', 'component', 'error', true, true, false);
       const testError = new Error('Test error');
       const testData = { context: 'test' };
       
@@ -138,7 +138,7 @@ describe('Logger', () => {
     });
 
     it('should not include error object when errorVerbose is false', async () => {
-      const logger = new Logger('non-verbose-logger', 'component', 'error', false);
+      const logger = new Logger('non-verbose-logger', 'component', 'error', false, true, false);
       const testError = new Error('Test error');
       const testData = { context: 'test' };
       
@@ -153,7 +153,7 @@ describe('Logger', () => {
 
   describe('Module Global Level', () => {
     it('should override instance level with module global level', async () => {
-      const logger = new Logger('global-test', 'component', 'debug', false);
+      const logger = new Logger('global-test', 'component', 'debug', false, true, false);
       
       // Set global level to error
       Logger.setModuleGlobalLevel('error');
@@ -181,7 +181,7 @@ describe('Logger', () => {
 
   describe('Trace Level Special Behavior', () => {
     it('should include caller information for trace level', async () => {
-      const logger = new Logger('trace-logger', 'component', 'trace', false);
+      const logger = new Logger('trace-logger', 'component', 'trace', false, true, false);
       
       await logger.trace('Trace with caller info');
       
